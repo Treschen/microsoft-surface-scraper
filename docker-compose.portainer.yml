@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  surface-live-scraper:
+    build:
+      context: https://github.com/Treschen/microsoft-surface-scraper.git
+      dockerfile: Dockerfile
+    image: surface-live-scraper:latest
+    container_name: surface_live_scraper
+    restart: "no"
+    command: ["node", "surface-crawl-products.mjs"]
+    environment:
+      SUPPLIER_BASE: "https://surfaceresellerprogram.co.za"
+      SHOP_URL: "https://surfaceresellerprogram.co.za/pages/shop"
+      AUTH_STATE_PATH: "/app/.auth/state.json"
+      OUTPUT_DIR: "/app/out"
+      OUTPUT_CSV: "surface-live.csv"
+      OUTPUT_JSON: "surface-live.json"
+      SEND_TO_N8N: "true"
+      N8N_WEBHOOK_URL: "https://n8n01.stponline.co.za/webhook/surface_ingest"
+      TARGET_NET_PROFIT: "1500"
+      VAT_RATE: "0.15"
+      PAYFAST_PERCENT: "0.0368"
+      PAYFAST_FIXED: "2.30"
+      ROUND_TO_NEAREST: "100"
+      BATCH_SIZE: "50"
+      CONCURRENCY: "4"
+      MAX_PRODUCTS: "200"
+      FOLLOW_COLLECTIONS: "true"
+      COLLECTION_PAGES_LIMIT: "10"
+    volumes:
+      - "C:\\scrapers\\surface\\.auth:/app/.auth"
+      - "C:\\scrapers\\surface\\out:/app/out"
+    shm_size: "1gb"
+
+  surface-live-scheduler:
+    image: alpine:3.21
+    container_name: surface_live_scheduler
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: >
+      sh -c "
+        apk add --no-cache docker-cli >/dev/null 2>&1 &&
+        echo '@reboot docker start surface_live_scraper' > /etc/crontabs/root &&
+        echo '0 */4 * * * docker start surface_live_scraper' >> /etc/crontabs/root &&
+        crond -f -l 2
+      "

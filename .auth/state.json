@@ -1,0 +1,97 @@
+{
+  "cookies": [
+    {
+      "name": "localization",
+      "value": "ZA",
+      "domain": "surfaceresellerprogram.co.za",
+      "path": "/",
+      "expires": 1808326538.78845,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_shopify_y",
+      "value": "98889b24-f57f-4a6d-8b54-529ee550502c",
+      "domain": ".surfaceresellerprogram.co.za",
+      "path": "/",
+      "expires": 1808348138.788569,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_shopify_s",
+      "value": "9bfa2f89-73ee-4dd5-a425-30d16e55a4bf",
+      "domain": ".surfaceresellerprogram.co.za",
+      "path": "/",
+      "expires": 1776792338.788633,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_shopify_analytics",
+      "value": ":AZ2w92aCAAEAulmtKZJ5z8GXQoOy7Mao3sT1e602zuBhyXMYKY9QCSF4DQfGW8HKzZ3HDohv-ySIaKqvJj86gKh2Qaw6cs9htE7tiY6Jkp4qkSyXzL5EBIbb:",
+      "domain": "surfaceresellerprogram.co.za",
+      "path": "/",
+      "expires": 1808326489.418444,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_shop_app_essential",
+      "value": ":AZ2w9322AAEAbNat7m53mvIa4PutDft5gG6qwNysPcC05qFT1vUzKl_J1h5XeaB-O6fup8fnIPcpoFkQnWVuHdVzrBXuCbRweNiIThqI1diI6dYQzbKWx88fxfvifwPltu9cyK5srtVaPmVtxR4BntQ_PhhTJQe8p7wjkwUnk_BEySUwSCF8z7evPQ:",
+      "domain": ".shop.app",
+      "path": "/",
+      "expires": 1808326497.382728,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "hmt_id",
+      "value": "b920791d-c00a-43e4-9b73-acdeaf7d6b63",
+      "domain": "api.hcaptcha.com",
+      "path": "/",
+      "expires": 1779382507.350281,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://surfaceresellerprogram.co.za",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "_shopify_marketing",
+      "value": ":AZ2w92aCAAEA-vraMwVs3VdbGlQOBccodDDyAdP3NJjvWZKN9MBgftE5B_W-XQQII7-ffmt9AboagWpOHZOMyQtE9NXRooP2frFk1pcmIXfDIIPB1EI:",
+      "domain": "surfaceresellerprogram.co.za",
+      "path": "/",
+      "expires": 1808326513.865052,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_shopify_essential",
+      "value": ":AZ2w92WfAAH_OLc6RK8RDmO_mQRx77ot1cEKYZ-g9A-fynC5YMxb2I55crDEVKdsZDovIQJe0AaB7l9pLBW4SGpV8xsM9kH-GMvTomv9vxL_X9UOeCon63VTNpbVEqQr93nI5BJCEHsQnIFD4gmqhFkxMYHHfNKeKrSeOhWK8gP9H3Bf53tFOYmgypGfib57Ie3szTbyZmCk3yTsalmmE5S2dUFgoJ-eT6xZ216BKObcP63V_mkuyZnJMHbpfb4EU1PwTt5zpoczUGlkKtjdxzjak2_TwWefSJJezFh4SljxRtlw8zFerursTidX4JfcjzqzEsR3_VWLbRqBG-XMqWatKCGpQcKAz9GV9xmufJPPd1VpEgy_jjouzdX6hKT_BFAn68c6sd2cFbUWDVSP5ffosW-0hzBLGxuTWmCv3KhSnN2ErhZcnlraIMuQQ0gaEUKwC2RK0bSG4RZ4wUKyrLLXb3YRgO3dMieisULu1YOjsWJUakaQfWekEHnVJwvrOoyRYaa6lI0kFsgblg3j5Yyxpeq7oqImpygkCyltZu23qcBbbQ:",
+      "domain": "surfaceresellerprogram.co.za",
+      "path": "/",
+      "expires": 1808326540.49377,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://shop.app",
+      "localStorage": [
+        {
+          "name": "bugsnag-anonymous-id",
+          "value": "cmo8v6pop0000356nmquhdi79"
+        }
+      ]
+    }
+  ]
+}

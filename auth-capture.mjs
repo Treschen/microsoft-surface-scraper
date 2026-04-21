@@ -14,14 +14,14 @@ async function main() {
     args: [
       "--disable-blink-features=AutomationControlled",
       "--disable-dev-shm-usage",
-      "--no-sandbox"
-    ]
+      "--no-sandbox",
+    ],
   });
 
   const context = await browser.newContext({
     viewport: { width: 1440, height: 900 },
     locale: "en-ZA",
-    timezoneId: "Africa/Johannesburg"
+    timezoneId: "Africa/Johannesburg",
   });
 
   const page = await context.newPage();
@@ -32,7 +32,8 @@ async function main() {
   await page.goto(loginUrl, { waitUntil: "domcontentloaded", timeout: 120000 });
 
   console.log("[auth] Login manually in the opened browser.");
-  console.log("[auth] Once you are fully signed in and can open /account, press ENTER here.");
+  console.log("[auth] When you are fully logged in, press ENTER here.");
+
   await waitForEnter();
 
   await page.goto(accountUrl, { waitUntil: "domcontentloaded", timeout: 120000 });
@@ -40,13 +41,14 @@ async function main() {
 
   const url = page.url();
   console.log("[auth] now at:", url);
+
   if (url.includes("/account/login")) {
-    throw new Error("Still on login page. Complete sign-in first, then rerun auth capture.");
+    throw new Error("Not logged in yet; still on /account/login");
   }
 
   const outPath = path.join(OUT_DIR, OUT_FILE);
   await context.storageState({ path: outPath });
-  console.log("[auth] saved storageState:", outPath);
+  console.log("[auth] saved:", outPath);
 
   await browser.close();
 }

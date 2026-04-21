@@ -1,9 +1,0 @@
-.env
-node_modules/
-error-*.png
-.claude/
-.auth/
-fix_workflow.py
-workflow_fix.json
-n8n_update_payload.json
-build_payload.cjs
