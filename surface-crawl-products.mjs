@@ -13,6 +13,8 @@ import { postJsonWithRetry } from "./lib/fetch-retry.mjs";
 const {
   SUPPLIER_BASE = "https://surfaceresellerprogram.co.za",
   SHOP_URL = "https://surfaceresellerprogram.co.za/pages/shop",
+  SCRAPE_MODE = "auto",
+  TARGET_PRODUCT_URLS = "",
   AUTH_STATE_PATH = "/app/.auth/state.json",
   OUTPUT_DIR = "/app/out",
   OUTPUT_CSV = "surface-live.csv",
@@ -30,6 +32,15 @@ const {
   PAYFAST_FIXED = "2.30",
   ROUND_TO_NEAREST = "100"
 } = process.env;
+
+function parseTargetUrls(raw) {
+  return String(raw || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => /^https?:\/\//i.test(line))
+    .map((line) => line.split(/[?#]/)[0]);
+}
 
 const batchSize = Math.max(1, parseInt(BATCH_SIZE, 10) || 50);
 const concurrency = Math.max(1, parseInt(CONCURRENCY, 10) || 4);
@@ -57,12 +68,26 @@ async function main() {
     authStatePath: AUTH_STATE_PATH
   });
 
-  const productUrls = await getProductUrls(page, {
-    shopUrl: SHOP_URL,
-    followCollections: FOLLOW_COLLECTIONS === "true",
-    collectionPagesLimit,
-    maxProducts
-  });
+  let productUrls = [];
+
+  if (SCRAPE_MODE === "target_urls") {
+    productUrls = parseTargetUrls(TARGET_PRODUCT_URLS);
+
+    if (!productUrls.length) {
+      throw new Error("SCRAPE_MODE=target_urls but TARGET_PRODUCT_URLS is empty or invalid.");
+    }
+
+    console.log(`[mode] using explicit target URLs: ${productUrls.length}`);
+  } else {
+    productUrls = await getProductUrls(page, {
+      shopUrl: SHOP_URL,
+      followCollections: FOLLOW_COLLECTIONS === "true",
+      collectionPagesLimit,
+      maxProducts
+    });
+
+    console.log(`[mode] using auto discovery: ${productUrls.length}`);
+  }
 
   console.log(`[crawl] product urls found: ${productUrls.length}`);
 
