@@ -1,0 +1,33 @@
+services:
+  surface-scraper:
+    build: .
+    container_name: microsoft-surface-scraper
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      SUPPLIER_BASE: https://surfaceresellerprogram.co.za
+      SCRAPE_MODE: target_urls
+      TARGET_PRODUCT_URLS: |
+        https://surfaceresellerprogram.co.za/products/surface-pro-11
+        https://surfaceresellerprogram.co.za/products/surface-laptop-13-inch-snapdragon
+      AUTH_STATE_PATH: /app/.auth/state.json
+      OUTPUT_DIR: /app/out
+      OUTPUT_CSV: surface-live.csv
+      OUTPUT_JSON: surface-live.json
+      SEND_TO_N8N: "false"
+      N8N_WEBHOOK_URL: ""
+      BATCH_SIZE: "50"
+      CONCURRENCY: "4"
+      MAX_PRODUCTS: "200"
+      FOLLOW_COLLECTIONS: "false"
+      COLLECTION_PAGES_LIMIT: "10"
+      TARGET_NET_PROFIT: "1500"
+      VAT_RATE: "0.15"
+      PAYFAST_PERCENT: "0.0368"
+      PAYFAST_FIXED: "2.30"
+      ROUND_TO_NEAREST: "100"
+    volumes:
+      - ./.auth:/app/.auth
+      - ./out:/app/out
+    command: ["node", "/app/surface-crawl-products.mjs"]
