@@ -13,6 +13,8 @@ import { postJsonWithRetry } from "./lib/fetch-retry.mjs";
 const {
   SUPPLIER_BASE = "https://surfaceresellerprogram.co.za",
   SHOP_URL = "https://surfaceresellerprogram.co.za/pages/shop",
+  SCRAPE_MODE = "auto",
+  TARGET_PRODUCT_URLS = "",
   AUTH_STATE_PATH = "/app/.auth/state.json",
   OUTPUT_DIR = "/app/out",
   OUTPUT_CSV = "surface-live.csv",
@@ -30,6 +32,13 @@ const {
   PAYFAST_FIXED = "2.30",
   ROUND_TO_NEAREST = "100"
 } = process.env;
+
+function parseTargetUrls(raw) {
+  return raw
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.startsWith("http"));
+}
 
 const batchSize = Math.max(1, parseInt(BATCH_SIZE, 10) || 50);
 const concurrency = Math.max(1, parseInt(CONCURRENCY, 10) || 4);
@@ -57,14 +66,22 @@ async function main() {
     authStatePath: AUTH_STATE_PATH
   });
 
-  const productUrls = await getProductUrls(page, {
-    shopUrl: SHOP_URL,
-    followCollections: FOLLOW_COLLECTIONS === "true",
-    collectionPagesLimit,
-    maxProducts
-  });
+  let productUrls = [];
 
-  console.log(`[crawl] product urls found: ${productUrls.length}`);
+  if (SCRAPE_MODE === "target_urls") {
+    productUrls = parseTargetUrls(TARGET_PRODUCT_URLS);
+    console.log(`[mode] Using explicit target URLs: ${productUrls.length}`);
+  } else {
+    productUrls = await getProductUrls(page, {
+      shopUrl: SHOP_URL,
+      followCollections: FOLLOW_COLLECTIONS === "true",
+      collectionPagesLimit,
+      maxProducts
+    });
+    console.log(`[mode] Using auto discovery`);
+  }
+
+  console.log(`[crawl] product urls: ${productUrls.length}`);
 
   const limit = pLimit(concurrency);
   const allVariants = [];
@@ -102,44 +119,13 @@ async function main() {
     )
   );
 
-  allVariants.sort((a, b) => String(a.sku).localeCompare(String(b.sku)));
-
   const csvPath = path.join(OUTPUT_DIR, OUTPUT_CSV);
   fs.writeFileSync(csvPath, buildCsv(allVariants), "utf8");
 
   const jsonPath = path.join(OUTPUT_DIR, OUTPUT_JSON);
-  fs.writeFileSync(jsonPath, JSON.stringify({
-    extractedAt: new Date().toISOString(),
-    source: "surface-live",
-    count: allVariants.length,
-    items: allVariants
-  }, null, 2));
+  fs.writeFileSync(jsonPath, JSON.stringify({ items: allVariants }, null, 2));
 
-  console.log(`[out] csv written: ${csvPath}`);
-  console.log(`[out] json written: ${jsonPath}`);
   console.log(`[out] variants extracted: ${allVariants.length}`);
-
-  if (SEND_TO_N8N === "true") {
-    if (!N8N_WEBHOOK_URL) throw new Error("SEND_TO_N8N=true but N8N_WEBHOOK_URL is missing.");
-
-    const batches = chunk(allVariants, batchSize);
-    for (let i = 0; i < batches.length; i++) {
-      const body = {
-        source: "surface-live",
-        mode: "sku_price_stock_update",
-        matchBy: "sku",
-        batchIndex: i,
-        batchCount: batches.length,
-        count: batches[i].length,
-        items: batches[i]
-      };
-
-      console.log(`[n8n] posting batch ${i + 1}/${batches.length} (${batches[i].length} items)`);
-      await postJsonWithRetry(N8N_WEBHOOK_URL, body, { retries: 5, baseDelayMs: 700 });
-    }
-  } else {
-    console.log("[n8n] SEND_TO_N8N is false, skipping webhook POST.");
-  }
 
   await browser.close();
 }
