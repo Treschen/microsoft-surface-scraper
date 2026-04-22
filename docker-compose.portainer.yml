@@ -12,6 +12,9 @@ services:
     environment:
       SUPPLIER_BASE: "https://surfaceresellerprogram.co.za"
       SHOP_URL: "https://surfaceresellerprogram.co.za/pages/shop"
+      SCRAPE_MODE: "target_urls"
+      TARGET_PRODUCT_URLS: |
+        https://surfaceresellerprogram.co.za/products/surface-laptop-6
       AUTH_STATE_PATH: "/app/.auth/state.json"
       OUTPUT_DIR: "/app/out"
       OUTPUT_CSV: "surface-live.csv"
@@ -26,7 +29,7 @@ services:
       BATCH_SIZE: "50"
       CONCURRENCY: "4"
       MAX_PRODUCTS: "200"
-      FOLLOW_COLLECTIONS: "true"
+      FOLLOW_COLLECTIONS: "false"
       COLLECTION_PAGES_LIMIT: "10"
     volumes:
       - "C:\\scrapers\\surface\\.auth:/app/.auth"
